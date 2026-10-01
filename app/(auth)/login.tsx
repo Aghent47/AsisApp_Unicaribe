@@ -1,14 +1,14 @@
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
 } from "react-native";
 import { useAuth } from "../../src/auth/AuthContext";
 import { areFieldsComplete, isValidEmail } from "../../src/auth/validators";
@@ -44,7 +44,7 @@ export default function LoginScreen() {
       }
 
       // 3️⃣ Navegación post-login
-      router.replace("/app");
+      router.replace("../(app)");
     } catch (error) {
       Alert.alert("Error", "Algo salió mal. Intenta de nuevo.");
     } finally {
@@ -93,7 +93,7 @@ export default function LoginScreen() {
 
       {/* ⚠️ Este Link se muestra solo si el registro está habilitado */}
       {authConfig.REGISTRATION_ENABLED && (
-        <Link href="/auth/register" style={styles.link}>
+        <Link href="/(auth)/register" style={styles.link}>
           ¿No tienes cuenta? Regístrate
         </Link>
       )}
