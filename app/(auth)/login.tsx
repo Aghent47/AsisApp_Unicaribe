@@ -1,5 +1,5 @@
 import { Link, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -18,11 +18,21 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+
+  // ✅ Añadimos isAuthenticated para observar el estado
+  const { signIn, isAuthenticated } = useAuth();
   const router = useRouter();
 
+  // ✅ ESTE useEffect navega cuando el estado cambia a autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      //console.log("🔍 Redirigiendo a /(app) porque isAuthenticated = true");
+      router.replace("/(app)");
+    }
+  }, [isAuthenticated]);
+
   const handleLogin = async () => {
-    // 1️⃣ Validación de entrada
+    // 1️⃣ Validación de campos
     if (!areFieldsComplete({ email, password })) {
       Alert.alert("Campos incompletos", "Por favor llena todos los campos.");
       return;
@@ -33,19 +43,18 @@ export default function LoginScreen() {
       return;
     }
 
-    // 2️⃣ Ejecutar login con feedback visual
+    // 2️⃣ Ejecutar login
     setLoading(true);
     try {
       const result = await signIn(email, password);
 
       if (!result.success) {
         Alert.alert("Error de autenticación", result.message);
-        return;
       }
-
-      // 3️⃣ Navegación post-login
-      router.replace("../(app)");
+      // ⚠️ NO navegues aquí. El useEffect de arriba lo hace automáticamente
+      // cuando isAuthenticated cambie a true.
     } catch (error) {
+      console.error("❌ Error en login:", error);
       Alert.alert("Error", "Algo salió mal. Intenta de nuevo.");
     } finally {
       setLoading(false);
@@ -138,8 +147,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
   },
-  buttonDisabled: { opacity: 0.6 },
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
-  link: { marginTop: 20, textAlign: "center", color: "#003366", fontSize: 15 },
-  hint: { marginTop: 24, textAlign: "center", color: "#999", fontSize: 12 },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  link: {
+    marginTop: 20,
+    textAlign: "center",
+    color: "#003366",
+    fontSize: 15,
+  },
+  hint: {
+    marginTop: 24,
+    textAlign: "center",
+    color: "#999",
+    fontSize: 12,
+  },
 });

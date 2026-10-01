@@ -10,6 +10,10 @@ import { authConfig } from "../config/authConfig";
 import { initDatabase } from "../storage/FileStorage";
 import { AuthResult, login as loginService } from "./AuthService";
 
+// ─────────────────────────────────────────────────────────────
+// TIPOS
+// ─────────────────────────────────────────────────────────────
+
 interface SessionUser {
   id: number;
   email: string;
@@ -20,10 +24,14 @@ interface SessionUser {
 interface AuthContextType {
   user: SessionUser | null;
   isLoading: boolean;
-  isAuthenticated: boolean;
+  isAuthenticated: boolean; // ✅ Clave para el fix
   signIn: (email: string, password: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
 }
+
+// ─────────────────────────────────────────────────────────────
+// CONTEXTO
+// ─────────────────────────────────────────────────────────────
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -31,50 +39,83 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export default function AuthProvider({ children }: PropsWithChildren) {
+// ─────────────────────────────────────────────────────────────
+// PROVIDER
+// ─────────────────────────────────────────────────────────────
+
+export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<SessionUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Inicialización: crear DB si no existe + restaurar sesión
+  // 🔍 Log de depuración
+  //console.log("🔍 AuthProvider render:", { user, isLoading });
+
+  // ✅ useEffect con [] — solo corre UNA VEZ al montar
   useEffect(() => {
+    let isMounted = true;
+
     (async () => {
       try {
+        // 1. Inicializar la base de datos si no existe
         await initDatabase();
 
-        const storedUser = await AsyncStorage.getItem(
-          authConfig.SESSION_USER_KEY,
-        );
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
+        // 2. Cargar sesión guardada
+        const stored = await AsyncStorage.getItem(authConfig.SESSION_USER_KEY);
+        //console.log("🔍 Sesión inicial desde storage:", stored);
+
+        if (isMounted && stored) {
+          setUser(JSON.parse(stored));
         }
       } catch (error) {
-        console.error("Error inicializando auth:", error);
+        console.error("❌ Error cargando sesión:", error);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     })();
-  }, []);
 
+    return () => {
+      isMounted = false;
+    };
+  }, []); // ⬅️ CRÍTICO: array vacío
+
+  // ─────────────────────────────────────────────────────────
+  // signIn: guarda el usuario y actualiza el estado
+  // ─────────────────────────────────────────────────────────
   const signIn = async (
     email: string,
     password: string,
   ): Promise<AuthResult> => {
     const result = await loginService(email, password);
+    //console.log("🔍 signIn result:", result);
 
     if (result.success && result.user) {
-      await AsyncStorage.setItem(
-        authConfig.SESSION_USER_KEY,
-        JSON.stringify(result.user),
-      );
-      setUser(result.user);
+      try {
+        await AsyncStorage.setItem(
+          authConfig.SESSION_USER_KEY,
+          JSON.stringify(result.user),
+        );
+        //console.log("🔍 Guardado en AsyncStorage:", result.user);
+        setUser(result.user);
+        //console.log("🔍 setUser llamado — isAuthenticated ahora es true");
+      } catch (error) {
+        console.error("❌ Error guardando sesión:", error);
+      }
     }
 
     return result;
   };
 
+  // ─────────────────────────────────────────────────────────
+  // signOut: elimina el usuario y limpia el estado
+  // ─────────────────────────────────────────────────────────
   const signOut = async () => {
-    await AsyncStorage.removeItem(authConfig.SESSION_USER_KEY);
-    setUser(null);
+    try {
+      await AsyncStorage.removeItem(authConfig.SESSION_USER_KEY);
+      setUser(null);
+      //console.log("🔍 Sesión cerrada");
+    } catch (error) {
+      console.error("❌ Error cerrando sesión:", error);
+    }
   };
 
   return (
@@ -82,7 +123,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       value={{
         user,
         isLoading,
-        isAuthenticated: !!user,
+        isAuthenticated: !!user, // ✅ Se recalcula en cada render
         signIn,
         signOut,
       }}

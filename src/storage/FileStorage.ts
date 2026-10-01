@@ -16,7 +16,7 @@ export async function initDatabase(): Promise<void> {
   try {
     if (!usersFile.exists) {
       await usersFile.write(HEADER);
-      console.log("✅ Base de datos creada en:", usersFile.uri);
+      //console.log("✅ Base de datos creada en:", usersFile.uri);
 
       await insertUser({
         email: "admin@unicaribe.edu",
