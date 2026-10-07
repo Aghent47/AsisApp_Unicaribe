@@ -1,21 +1,21 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useAuth } from "../../src/auth/AuthContext";
 import { register as registerService } from "../../src/auth/AuthService";
 import {
-    areFieldsComplete,
-    isValidEmail,
-    validatePassword,
+  areFieldsComplete,
+  isValidEmail,
+  validatePassword,
 } from "../../src/auth/validators";
 import { authConfig } from "../../src/config/authConfig";
 
@@ -76,7 +76,7 @@ export default function RegisterScreen() {
           text: "OK",
           onPress: async () => {
             await signIn(email, password);
-            router.replace("/app");
+            router.replace("/(app)");
           },
         },
       ]);

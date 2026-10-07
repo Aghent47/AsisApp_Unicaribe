@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { authConfig } from "../config/authConfig";
-import { initDatabase } from "../storage/FileStorage";
+import { initDatabase, resetDatabase } from "../storage/FileStorage";
 import { AuthResult, login as loginService } from "./AuthService";
 
 // ─────────────────────────────────────────────────────────────
@@ -57,12 +57,18 @@ export function AuthProvider({ children }: PropsWithChildren) {
     (async () => {
       try {
         // 1. Inicializar la base de datos si no existe
+        await resetDatabase();
         await initDatabase();
 
         // 2. Cargar sesión guardada
+        // ⬇️ AÑADE ESTE LOG
         const stored = await AsyncStorage.getItem(authConfig.SESSION_USER_KEY);
-        //console.log("🔍 Sesión inicial desde storage:", stored);
+        console.log("🔍 Sesión:", stored);
 
+        // ⬇️ Importa getAllUsers y añade esto
+        const { getAllUsers } = await import("../storage/FileStorage");
+        const users = await getAllUsers();
+        console.log("🔍 Usuarios en DB:", JSON.stringify(users, null, 2));
         if (isMounted && stored) {
           setUser(JSON.parse(stored));
         }

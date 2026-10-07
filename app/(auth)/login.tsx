@@ -27,7 +27,6 @@ export default function LoginScreen() {
   // ✅ ESTE useEffect navega cuando el estado cambia a autenticado
   useEffect(() => {
     if (isAuthenticated) {
-      //console.log("🔍 Redirigiendo a /(app) porque isAuthenticated = true");
       router.replace("/(app)");
     }
   }, [isAuthenticated]);
