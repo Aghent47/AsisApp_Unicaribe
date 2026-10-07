@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { authConfig } from "../config/authConfig";
-import { initDatabase, resetDatabase } from "../storage/FileStorage";
+import { initDatabase } from "../storage/FileStorage";
 import { AuthResult, login as loginService } from "./AuthService";
 
 // ─────────────────────────────────────────────────────────────
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     (async () => {
       try {
         // 1. Inicializar la base de datos si no existe
-        await resetDatabase();
+        //await resetDatabase();
         await initDatabase();
 
         // 2. Cargar sesión guardada

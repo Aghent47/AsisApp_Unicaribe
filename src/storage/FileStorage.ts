@@ -19,7 +19,7 @@ export async function initDatabase(): Promise<void> {
       console.log("✅ Base de datos creada en:", usersFile.uri);
 
       await insertUser({
-        email: "admin1@unicaribe.edu",
+        email: "admin@unicaribe.edu",
         passwordHash: hashPassword("Admin123"),
         nombre: "Administradora",
         fechaRegistro: new Date().toISOString().split("T")[0],
