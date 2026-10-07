@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -25,8 +25,14 @@ export default function RegisterScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [nombre, setNombre] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, isAuthenticated } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace("/(app)");
+    }
+  }, [isAuthenticated]);
 
   // 🚫 Bloqueo duro: si el registro está desactivado, no se muestra la pantalla
   if (!authConfig.REGISTRATION_ENABLED) {
@@ -70,16 +76,16 @@ export default function RegisterScreen() {
         Alert.alert("Error", result.message);
         return;
       }
-
-      Alert.alert("¡Éxito!", "Cuenta creada. Iniciando sesión...", [
-        {
-          text: "OK",
-          onPress: async () => {
-            await signIn(email, password);
-            router.replace("/(app)");
-          },
-        },
-      ]);
+      await signIn(email, password);
+      // Alert.alert("¡Éxito!", "Cuenta creada. Iniciando sesión...", [
+      //   {
+      //     text: "OK",
+      //     onPress: async () => {
+      //
+      //       router.replace("/(app)");
+      //     },
+      //   },
+      // ]);
     } catch (error) {
       Alert.alert("Error", "No se pudo crear la cuenta.");
     } finally {
