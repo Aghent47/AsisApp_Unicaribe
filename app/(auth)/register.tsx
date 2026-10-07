@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     height: 120,
     resizeMode: "contain",
     marginBottom: 15,
+    marginTop: -130,
     alignSelf: "center",
   },
   hint: { fontSize: 12, color: "#666", fontStyle: "italic", marginBottom: 16 },
