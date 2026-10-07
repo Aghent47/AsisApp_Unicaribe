@@ -66,7 +66,7 @@ export default function LoginScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <Text style={styles.title}>AsisApp Unicaribe</Text>
+      <Text style={styles.title}>Nexo Unicaribe</Text>
       <Text style={styles.subtitle}>Inicia sesión para continuar</Text>
 
       <TextInput
