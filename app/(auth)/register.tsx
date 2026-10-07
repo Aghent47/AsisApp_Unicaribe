@@ -1,8 +1,9 @@
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -18,7 +19,6 @@ import {
   validatePassword,
 } from "../../src/auth/validators";
 import { authConfig } from "../../src/config/authConfig";
-
 export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -95,11 +95,16 @@ export default function RegisterScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Image
+        source={require("../../assets/images/nexo.png")}
+        style={styles.logo}
+      />
       <Text style={styles.title}>Crear Cuenta</Text>
 
       <TextInput
         style={styles.input}
         placeholder="Nombre completo"
+        placeholderTextColor="#999"
         value={nombre}
         onChangeText={setNombre}
         editable={!loading}
@@ -107,6 +112,7 @@ export default function RegisterScreen() {
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
+        placeholderTextColor="#999"
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -116,6 +122,7 @@ export default function RegisterScreen() {
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
+        placeholderTextColor="#999"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -124,6 +131,7 @@ export default function RegisterScreen() {
       <TextInput
         style={styles.input}
         placeholder="Confirmar contraseña"
+        placeholderTextColor="#999"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
@@ -145,6 +153,9 @@ export default function RegisterScreen() {
           <Text style={styles.buttonText}>Registrarse</Text>
         )}
       </TouchableOpacity>
+      <Link href="/(auth)/login" style={styles.link}>
+        ¿Ya tienes cuenta? Inicia sesión
+      </Link>
     </ScrollView>
   );
 }
@@ -163,6 +174,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#003366",
   },
+  link: {
+    marginTop: 20,
+    textAlign: "center",
+    color: "#003366",
+    fontSize: 15,
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
@@ -170,6 +187,13 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 16,
     fontSize: 16,
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    resizeMode: "contain",
+    marginBottom: 15,
+    alignSelf: "center",
   },
   hint: { fontSize: 12, color: "#666", fontStyle: "italic", marginBottom: 16 },
   button: {

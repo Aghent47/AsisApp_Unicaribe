@@ -51,7 +51,7 @@ export default function LoginScreen() {
       if (!result.success) {
         Alert.alert("Error de autenticación", result.message);
       }
-      // ⚠️ NO navegues aquí. El useEffect de arriba lo hace automáticamente
+      // NO navegues aquí. El useEffect de arriba lo hace automáticamente
       // cuando isAuthenticated cambie a true.
     } catch (error) {
       console.error("❌ Error en login:", error);
@@ -82,6 +82,7 @@ export default function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
+        placeholderTextColor="#999"
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -92,6 +93,7 @@ export default function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
+        placeholderTextColor="#999"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
