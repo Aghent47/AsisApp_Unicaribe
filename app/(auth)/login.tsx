@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -66,6 +67,16 @@ export default function LoginScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
+      <Image
+        source={require("../../assets/images/nexo.png")}
+        style={{
+          width: 120,
+          height: 120,
+          resizeMode: "contain",
+          marginBottom: 15,
+          alignSelf: "center",
+        }}
+      />
       <Text style={styles.title}>Nexo Unicaribe</Text>
       <Text style={styles.subtitle}>Inicia sesión para continuar</Text>
 
